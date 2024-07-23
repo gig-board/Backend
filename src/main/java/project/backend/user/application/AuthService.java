@@ -28,6 +28,7 @@ import project.backend.user.infra.security.jwt.token.TokenResponse;
 import project.backend.user.repository.UserRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,8 +36,7 @@ import java.util.Collections;
 @Transactional(readOnly = true)
 public class AuthService {
 
-    private static final String REFRESH_HEADER = "RefreshToken";
-
+    private final String BEARER = "Bearer ";
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
@@ -49,6 +49,9 @@ public class AuthService {
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirect_uri;
+
+    @Value("${jwt.refresh_header}")
+    private String refreshTokenHeader;
 
     @Transactional
     public TokenResponse kakaoLogin(String code) throws JsonProcessingException {
@@ -140,8 +143,9 @@ public class AuthService {
     }
 
     public TokenResponse reissueAccessToken(HttpServletRequest request) {
-        String refreshToken = getTokenFromHeader(request, REFRESH_HEADER);
+        String refreshToken = extractRefreshToken(request).orElse(null);
 
+        // RefreshToken이 유효하지 않을 경우 -> 재로그인 필요
         if (!tokenProvider.validate(refreshToken) || !tokenProvider.validateExpire(refreshToken)) {
             throw new RuntimeException();
         }
@@ -166,12 +170,11 @@ public class AuthService {
         return tokenResponse;
     }
 
-    private String getTokenFromHeader(HttpServletRequest request, String headerName) {
-        String token = request.getHeader(headerName);
-        if (StringUtils.hasText(token)) {
-            return token;
-        }
-        return null;
+    // RefreshToken 추출
+    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(refreshTokenHeader))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
 }

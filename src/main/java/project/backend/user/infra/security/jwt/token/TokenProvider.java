@@ -28,9 +28,9 @@ public class TokenProvider {
     private static final String AUTH_KEY = "AUTHORITY";
     private static final String AUTH_EMAIL = "EMAIL";
     private Key key;
-    private String secretKey;
-    private long accessExpirations;
-    private long refreshExpirations;
+    private final String secretKey;
+    private final long accessExpirations;
+    private final long refreshExpirations;
 
     public TokenProvider(@Value("${jwt.secret_key}") String secretKey,
                          @Value("${jwt.access_expirations}") long accessExpirations,
@@ -46,14 +46,14 @@ public class TokenProvider {
         this.key = new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
-    public TokenResponse createToken(String memberId, String email, String role) {
+    public TokenResponse createToken(String userId, String email, String role) {
         long now = (new Date()).getTime();
 
         Date accessValidity = new Date(now + this.accessExpirations);
         Date refreshValidity = new Date(now + this.refreshExpirations);
 
         String accessToken = Jwts.builder()
-                .addClaims(Map.of(AUTH_ID, memberId))
+                .addClaims(Map.of(AUTH_ID, userId))
                 .addClaims(Map.of(AUTH_EMAIL, email))
                 .addClaims(Map.of(AUTH_KEY, role))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -61,7 +61,7 @@ public class TokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .addClaims(Map.of(AUTH_ID, memberId))
+                .addClaims(Map.of(AUTH_ID, userId))
                 .addClaims(Map.of(AUTH_EMAIL, email))
                 .addClaims(Map.of(AUTH_KEY, role))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -83,7 +83,7 @@ public class TokenProvider {
                 .split(","));
 
         List<? extends GrantedAuthority> simpleGrantedAuthorities = authorities.stream()
-                .map(auth -> new SimpleGrantedAuthority(auth))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         KakaoUserDetails principal = new KakaoUserDetails(Long.parseLong((String) claims.get(AUTH_ID)),

@@ -6,12 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import project.backend.user.infra.security.jwt.token.TokenProvider;
 
@@ -20,7 +21,9 @@ import project.backend.user.infra.security.jwt.token.TokenProvider;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String ACCESS_HEADER = "AccessToken";
+    @Value("${jwt.access_header}")
+    private String accessTokenHeader;
+    private final String BEARER = "Bearer ";
     private final TokenProvider tokenProvider;
 
     @Override
@@ -33,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = getTokenFromHeader(request, ACCESS_HEADER);
+        String accessToken = extractAccessToken(request).orElse(null);
 
         if (!tokenProvider.validateExpire(accessToken) && tokenProvider.validate(accessToken)) {
             String redirectUrl =
@@ -65,12 +68,10 @@ public class JwtFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private String getTokenFromHeader(HttpServletRequest request, String headerName) {
-        String token = request.getHeader(headerName);
-        if (StringUtils.hasText(token)) {
-            return token;
-        }
-        return null;
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(accessTokenHeader))
+                .filter(accessToken -> accessToken.startsWith(BEARER))
+                .map(accessToken -> accessToken.replace(BEARER, ""));
     }
 
 }

@@ -44,7 +44,6 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers("v1/exception/**").permitAll()
-                        .requestMatchers("/login/oauth2/code/kakao").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
