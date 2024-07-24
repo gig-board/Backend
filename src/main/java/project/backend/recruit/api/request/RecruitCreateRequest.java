@@ -40,9 +40,6 @@ public class RecruitCreateRequest {
     @NotBlank(message = "공지사항은 필수입니다.")
     private String notice;
 
-    @NotNull(message = "작성자는 필수입니다.")
-    private Long userId;
-
     @Builder
     public RecruitCreateRequest(
             String title,
@@ -53,8 +50,7 @@ public class RecruitCreateRequest {
             LocalDate startDate,
             LocalDate endDate,
             String level,
-            String notice,
-            Long userId) {
+            String notice) {
         this.title = title;
         this.content = content;
         this.image = image;
@@ -64,7 +60,6 @@ public class RecruitCreateRequest {
         this.endDate = endDate;
         this.level = level;
         this.notice = notice;
-        this.userId = userId;
     }
 
     public RecruitCreateServiceRequest toServiceRequest() {
@@ -78,7 +73,6 @@ public class RecruitCreateRequest {
                 .endDate(endDate)
                 .level(level)
                 .notice(notice)
-                .userId(userId)
                 .build();
     }
 

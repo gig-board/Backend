@@ -17,8 +17,8 @@ public class RecruitService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createRecruit(RecruitCreateServiceRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public void createRecruit(RecruitCreateServiceRequest request, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
 
         recruitRepository.save(request.toEntity(user));

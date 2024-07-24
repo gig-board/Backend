@@ -52,4 +52,11 @@ public class User extends BaseEntity {
         this.profileImage = profileImage;
     }
 
+    public static User createUser(String email, String name) {
+        return User.builder()
+                .email(email)
+                .name(name)
+                .build();
+    }
+
 }

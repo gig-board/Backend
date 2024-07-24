@@ -22,7 +22,6 @@ public class RecruitCreateServiceRequest {
     private LocalDate endDate;
     private String level;
     private String notice;
-    private Long userId;
 
     @Builder
     public RecruitCreateServiceRequest(
@@ -34,8 +33,7 @@ public class RecruitCreateServiceRequest {
             LocalDate startDate,
             LocalDate endDate,
             String level,
-            String notice,
-            Long userId) {
+            String notice) {
         this.title = title;
         this.content = content;
         this.image = image;
@@ -45,7 +43,6 @@ public class RecruitCreateServiceRequest {
         this.endDate = endDate;
         this.level = level;
         this.notice = notice;
-        this.userId = userId;
     }
 
     public Recruit toEntity(User user) {
