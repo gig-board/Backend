@@ -3,13 +3,13 @@ package project.backend.club.applicaion.request;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import project.backend.club.domain.Club;
 import project.backend.club.domain.ClubMember;
 import project.backend.club.domain.ClubTeam;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ClubTeamServiceRequest {
 
     private String name;

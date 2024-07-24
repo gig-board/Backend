@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project.backend.club.api.request.ClubCreateSessionAndLevel;
 import project.backend.club.api.request.ClubMemberRequest;
 import project.backend.club.api.request.ClubRequest;
-import project.backend.club.api.request.ClubSessionRequest;
 import project.backend.club.api.request.ClubTeamRequest;
 import project.backend.club.applicaion.ClubService;
 
@@ -26,11 +26,21 @@ public class ClubController {
 
     @PostMapping
     public ResponseEntity<String> createClub(
-            @RequestBody @Valid ClubRequest clubRequest,
-            @RequestBody @Valid ClubSessionRequest sessionRequest) {
-        clubService.createClub(clubRequest.toServiceRequest(), sessionRequest.toServiceRequest());
+            @RequestBody @Valid ClubRequest request) {
+        clubService.createClub(request.toServiceRequest());
 
         return ResponseEntity.ok("동아리 등록 성공");
+    }
+
+    @PostMapping("/{clubId}/session")
+    public ResponseEntity<String> createClubSessionAndLevel(
+            @RequestBody @Valid ClubCreateSessionAndLevel request,
+            @PathVariable("clubId") Long clubId) {
+
+        clubService.createClubSessionAndLevel(request.getSessionRequest().toServiceRequest(),
+                request.getLevelRequest().toServiceRequest(),
+                clubId);
+        return ResponseEntity.ok("동아리 세션, 수준 설정 성공");
     }
 
     @PostMapping("/{clubId}/member")

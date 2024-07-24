@@ -1,19 +1,22 @@
 package project.backend.club.applicaion;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.backend.club.applicaion.request.ClubMemberLevelServiceRequest;
 import project.backend.club.applicaion.request.ClubMemberServiceRequest;
 import project.backend.club.applicaion.request.ClubServiceRequest;
 import project.backend.club.applicaion.request.ClubSessionServiceRequest;
 import project.backend.club.applicaion.request.ClubTeamServiceRequest;
 import project.backend.club.domain.Club;
 import project.backend.club.domain.ClubMember;
-import project.backend.club.domain.ClubSession;
+import project.backend.club.domain.ClubMemberLevel;
 import project.backend.club.domain.ClubTeam;
+import project.backend.club.repository.ClubMemberLevelRepository;
 import project.backend.club.repository.ClubMemberRepository;
 import project.backend.club.repository.ClubRepository;
 import project.backend.club.repository.ClubSessionRepository;
@@ -31,18 +34,52 @@ public class ClubService {
     private final ClubMemberRepository clubMemberRepository;
     private final ClubTeamRepository clubTeamRepository;
     private final ClubSessionRepository clubSessionRepository;
+    private final ClubMemberLevelRepository clubMemberLevelRepository;
 
 
     @Transactional
-    public void createClub(ClubServiceRequest clubRequest, ClubSessionServiceRequest sessionRequest) {
-        User user = userRepository.findById(clubRequest.getUserId())
+    public void createClub(ClubServiceRequest request) {
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(RuntimeException::new);
 
-        Club club = clubRequest.toEntity(user);
+        Club club = request.toEntity(user);
 
-        List<ClubSession> clubSessions = sessionRequest.toEntity(club);
         clubRepository.save(club);
-        clubSessionRepository.saveAll(clubSessions);
+    }
+
+    @Transactional
+    public void createClubSessionAndLevel(ClubSessionServiceRequest sessionRequest,
+                                          ClubMemberLevelServiceRequest levelRequest,
+                                          Long clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Club member not found"));
+
+        clubSessionRepository.saveAll(sessionRequest.toEntity(club));
+
+        List<ClubMemberLevel> levels = new ArrayList<>();
+
+        switch (levelRequest.getLevel()) {
+            case "level1":
+                levels.add(ClubMemberLevel.create("HIGH", club));
+                levels.add(ClubMemberLevel.create("LOW", club));
+                break;
+            case "level2":
+                levels.add(ClubMemberLevel.create("HIGH", club));
+                levels.add(ClubMemberLevel.create("MIDDLE", club));
+                levels.add(ClubMemberLevel.create("LOW", club));
+                break;
+            case "level3":
+                levels.add(ClubMemberLevel.create("MASTER", club));
+                levels.add(ClubMemberLevel.create("HIGH", club));
+                levels.add(ClubMemberLevel.create("MIDDLE", club));
+                levels.add(ClubMemberLevel.create("LOW", club));
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid level: " + levelRequest.getLevel());
+        }
+
+        clubMemberLevelRepository.saveAll(levels);
+
     }
 
     @Transactional

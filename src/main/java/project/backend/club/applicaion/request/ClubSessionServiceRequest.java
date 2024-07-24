@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import project.backend.club.domain.Club;
 import project.backend.club.domain.ClubSession;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ClubSessionServiceRequest {
 
     private List<String> sessions;

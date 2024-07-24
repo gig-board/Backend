@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import project.backend.club.applicaion.request.ClubTeamServiceRequest;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ClubTeamRequest {
 
     @NotBlank(message = "팀 이름은 필수입니다.")
