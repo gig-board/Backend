@@ -2,50 +2,50 @@ package project.backend.club.api.request;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.backend.club.applicaion.request.ClubMemberServiceRequest;
+import project.backend.club.applicaion.request.ClubCreateMemberServiceRequest;
 
 @Getter
 @NoArgsConstructor
-public class ClubMemberRequest {
+public class ClubCreateMemberRequest {
 
     @NotBlank(message = "부원 이름은 필수입니다.")
     private String name;
-    @NotBlank(message = "부원 수준은 필수입니다.")
-    private String level;
+
     @NotBlank(message = "부원의 세션은 필수입니다.")
     private String session;
-    @NotNull(message = "부원의 동아리는 필수입니다.")
-    private Long clubId;
+
+    @NotBlank(message = "부원 수준은 필수입니다.")
+    private String level;
+
     @Nullable
     private Long clubTeamId;
 
     @Builder
-    public ClubMemberRequest(
+    public ClubCreateMemberRequest(
             String name,
-            String level,
             String session,
-            Long clubId,
+            String level,
             @Nullable Long clubTeamId) {
 
         this.name = name;
-        this.level = level;
         this.session = session;
-        this.clubId = clubId;
+        this.level = level;
         this.clubTeamId = clubTeamId;
+
     }
 
-    public ClubMemberServiceRequest toServiceRequest() {
-        return ClubMemberServiceRequest.builder()
+    public ClubCreateMemberServiceRequest toServiceRequest() {
+
+        return ClubCreateMemberServiceRequest.builder()
                 .name(name)
-                .level(level)
                 .session(session)
-                .clubId(clubId)
+                .level(level)
+                .clubTeamId(clubTeamId)
                 .build();
-    }
 
+    }
 
 }

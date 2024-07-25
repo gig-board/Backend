@@ -9,36 +9,37 @@ import project.backend.club.domain.ClubTeam;
 
 @Getter
 @NoArgsConstructor
-public class ClubMemberServiceRequest {
+public class ClubCreateMemberServiceRequest {
 
     private String name;
-    private String level;
     private String session;
-    private Long clubId;
+    private String level;
     private Long clubTeamId;
 
     @Builder
-    public ClubMemberServiceRequest(
+    public ClubCreateMemberServiceRequest(
             String name,
-            String level,
             String session,
-            Long clubId,
+            String level,
             Long clubTeamId) {
+
         this.name = name;
-        this.level = level;
         this.session = session;
-        this.clubId = clubId;
+        this.level = level;
         this.clubTeamId = clubTeamId;
+
     }
 
     public ClubMember toEntity(Club club, ClubTeam clubTeam) {
+
         return ClubMember.builder()
                 .name(name)
-                .level(level)
                 .session(session)
+                .level(level)
                 .club(club)
                 .clubTeam(clubTeam)
                 .build();
+
     }
 
 }

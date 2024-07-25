@@ -10,28 +10,30 @@ import project.backend.club.domain.ClubTeam;
 
 @Getter
 @NoArgsConstructor
-public class ClubTeamServiceRequest {
+public class ClubCreateTeamServiceRequest {
 
     private String name;
-    private Long clubId;
     private Long clubMemberId;
 
     @Builder
-    public ClubTeamServiceRequest(
+    public ClubCreateTeamServiceRequest(
             String name,
-            Long clubId,
             @Nullable Long clubMemberId) {
+
         this.name = name;
-        this.clubId = clubId;
         this.clubMemberId = clubMemberId;
+
     }
 
+
     public ClubTeam toEntity(Club club, ClubMember clubMember) {
+
         return ClubTeam.builder()
                 .name(name)
                 .club(club)
                 .clubMember(clubMember)
                 .build();
+
     }
 
 }

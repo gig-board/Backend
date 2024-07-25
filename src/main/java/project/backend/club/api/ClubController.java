@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import project.backend.club.api.request.ClubCreateSessionAndLevel;
-import project.backend.club.api.request.ClubMemberRequest;
-import project.backend.club.api.request.ClubRequest;
-import project.backend.club.api.request.ClubTeamRequest;
+import project.backend.club.api.request.ClubCreateMemberRequest;
+import project.backend.club.api.request.ClubCreateRequest;
+import project.backend.club.api.request.ClubCreateTeamRequest;
+import project.backend.club.api.request.ClubEditMemberRequest;
 import project.backend.club.applicaion.ClubService;
 
 @RestController
@@ -26,41 +26,34 @@ public class ClubController {
 
     @PostMapping
     public ResponseEntity<String> createClub(
-            @RequestBody @Valid ClubRequest request) {
+            @RequestBody @Valid ClubCreateRequest request) {
+
         clubService.createClub(request.toServiceRequest());
 
         return ResponseEntity.ok("동아리 등록 성공");
-    }
 
-    @PostMapping("/{clubId}/session")
-    public ResponseEntity<String> createClubSessionAndLevel(
-            @RequestBody @Valid ClubCreateSessionAndLevel request,
-            @PathVariable("clubId") Long clubId) {
-
-        clubService.createClubSessionAndLevel(request.getSessionRequest().toServiceRequest(),
-                request.getLevelRequest().toServiceRequest(),
-                clubId);
-        return ResponseEntity.ok("동아리 세션, 수준 설정 성공");
     }
 
     @PostMapping("/{clubId}/member")
     public ResponseEntity<String> createClubMember(
-            @RequestBody @Valid ClubMemberRequest request,
+            @RequestBody @Valid ClubCreateMemberRequest request,
             @PathVariable("clubId") Long clubId) {
 
         clubService.createClubMember(request.toServiceRequest(), clubId);
 
         return ResponseEntity.ok("동아리 부원 등록 성공");
+
     }
 
     @PatchMapping("/{clubId}/member/{memberId}")
     public ResponseEntity<String> editClubMember(
-            @RequestBody @Valid ClubMemberRequest request,
+            @RequestBody @Valid ClubEditMemberRequest request,
             @PathVariable("clubId") Long clubId,
             @PathVariable("memberId") Long memberId) {
 
         clubService.editClubMember(request.toServiceRequest(), clubId, memberId);
         return ResponseEntity.ok("동아리 부원 정보 수정 성공");
+
     }
 
     @DeleteMapping("/{clubId}/member/{memberId}")
@@ -72,6 +65,7 @@ public class ClubController {
         clubService.deleteClubMember(clubId, memberId);
 
         return ResponseEntity.ok("동아리 부원 삭제 완료");
+
     }
 
     @PatchMapping("/{clubId}/member/{memberId}/{teamId}")
@@ -83,15 +77,17 @@ public class ClubController {
 
         clubService.changeClubMemberTeam(newTeamId, clubId, memberId, teamId);
         return ResponseEntity.ok("동아리 부원 팀 변경 성공");
+
     }
 
     @PostMapping("/{clubId}/team")
     public ResponseEntity<String> createClubTeam(
-            @RequestBody @Valid ClubTeamRequest request,
+            @RequestBody @Valid ClubCreateTeamRequest request,
             @PathVariable("clubId") Long clubId) {
 
         clubService.createClubTeam(request.toServiceRequest(), clubId);
         return ResponseEntity.ok("동아리 팀 생성 성공");
+
     }
 
     @PatchMapping("/{clubId}/team/{teamId}")
@@ -102,6 +98,7 @@ public class ClubController {
 
         clubService.editClubTeamName(newTeamName, clubId, teamId);
         return ResponseEntity.ok("팀명 변경 성공");
+
     }
 
 }
