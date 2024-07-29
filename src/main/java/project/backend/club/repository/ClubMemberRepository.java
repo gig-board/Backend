@@ -7,6 +7,7 @@ import project.backend.club.domain.ClubMember;
 
 @Repository
 public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
+
     Optional<ClubMember> findByIdAndClubId(Long memberId, Long clubId);
 
 }

@@ -8,4 +8,5 @@ import project.backend.club.domain.ClubMemberLevel;
 @Repository
 public interface ClubMemberLevelRepository extends JpaRepository<ClubMemberLevel, Long> {
     Optional<ClubMemberLevel> findByClubId(Long clubId);
+
 }
