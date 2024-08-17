@@ -24,7 +24,7 @@ public class RefreshToken {
         return authorities.stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
                 .toList()
-                .getFirst()
+                .get(0)  // 수정된 부분
                 .getAuthority();
     }
 
