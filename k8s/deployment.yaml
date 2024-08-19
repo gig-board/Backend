@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: gigboard-be # 백엔드 컨테이너 이미지
+          ports:
+            - containerPort: 8082 # 백엔드 컨테이너가 사용하는 포트
+              name: backend
