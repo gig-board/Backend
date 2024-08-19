@@ -8,5 +8,5 @@ spec:
     app: backend # 이 서비스가 어떤 Pods에 연결될지 정의
   ports:
     - protocol: TCP
-      port: 8082 # 서비스가 노출할 포트
-      targetPort: 8082 # 실제 Pod에서 수신하는 포트
+      port: 9090 # 서비스가 노출할 포트
+      targetPort: 9090 # 실제 Pod에서 수신하는 포트

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: gigboard-be # 백엔드 컨테이너 이미지
+          image: potatoj1n/gigboard-be:latest # 백엔드 컨테이너 이미지
           ports:
-            - containerPort: 8082 # 백엔드 컨테이너가 사용하는 포트
+            - containerPort: 9090 # 백엔드 컨테이너가 사용하는 포트
               name: backend
